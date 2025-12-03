@@ -958,6 +958,33 @@
                 justify-content: center;
             }
         }
+        
+        /* Admin Integration Status */
+        .admin-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            z-index: 1000;
+            border-left: 3px solid var(--success-color);
+            opacity: 0.9;
+        }
+        
+        .admin-status.offline {
+            border-left-color: var(--error-color);
+        }
+        
+        .admin-status i {
+            font-size: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -966,6 +993,12 @@
     
     <!-- Gift Animation -->
     <div class="gift-animation" id="gift-animation"></div>
+    
+    <!-- Admin Status -->
+    <div class="admin-status" id="admin-status">
+        <i class="fas fa-plug"></i>
+        <span>Админ-панель: <strong id="admin-status-text">Подключено</strong></span>
+    </div>
     
     <!-- Header -->
     <header>
@@ -1010,6 +1043,9 @@
             <p>Мы свяжемся с вами в ближайшее время для уточнения деталей доставки.</p>
             <p style="margin-top: 1.5rem; font-size: 1.2rem; color: var(--primary-color);">
                 Номер вашего заказа: <strong id="order-number" style="color: var(--secondary-color);">WD-2024-0001</strong>
+            </p>
+            <p id="order-sent-status" style="margin-top: 1rem; padding: 0.8rem; background: #E8F5E9; border-radius: 8px; color: var(--primary-color);">
+                <i class="fas fa-paper-plane"></i> Заказ отправлен в мастерскую
             </p>
             <button class="modal-btn" id="close-modal">Вернуться за подарками</button>
         </div>
@@ -1058,6 +1094,8 @@
     </footer>
 
     <script>
+        // ==================== CART INTEGRATION WITH ADMIN ====================
+        
         // Create snowflakes
         function createSnowflakes() {
             const snowflakesContainer = document.getElementById('snowflakes');
@@ -1117,6 +1155,24 @@
                 setTimeout(() => {
                     gift.remove();
                 }, (duration + delay) * 1000);
+            }
+        }
+
+        // Check admin panel connection
+        function checkAdminConnection() {
+            const adminStatus = document.getElementById('admin-status');
+            const statusText = document.getElementById('admin-status-text');
+            
+            // Check if admin orders exist in localStorage
+            const orders = localStorage.getItem('woodadvent_orders');
+            if (orders) {
+                adminStatus.classList.remove('offline');
+                statusText.textContent = 'Подключено';
+                adminStatus.innerHTML = '<i class="fas fa-plug"></i> <span>Админ-панель: <strong>Подключено</strong></span>';
+            } else {
+                adminStatus.classList.add('offline');
+                statusText.textContent = 'Не активно';
+                adminStatus.innerHTML = '<i class="fas fa-plug"></i> <span>Админ-панель: <strong>Не активно</strong></span>';
             }
         }
 
@@ -1350,6 +1406,16 @@
                                     <label for="comment">🎄 Пожелания к заказу</label>
                                     <textarea id="comment" rows="2" placeholder="Особые пожелания или поздравления..."></textarea>
                                 </div>
+                                <div class="form-group">
+                                    <label for="delivery-date">📅 Желаемая дата доставки</label>
+                                    <input type="date" id="delivery-date" min="${new Date().toISOString().split('T')[0]}">
+                                </div>
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="gift-wrap" checked>
+                                        🎀 Праздничная подарочная упаковка (+500 ₽)
+                                    </label>
+                                </div>
                                 <button type="submit" class="checkout-btn" id="checkout-btn">
                                     🎉 Оформить заказ
                                 </button>
@@ -1480,6 +1546,14 @@
                         this.processOrder();
                     });
                 }
+                
+                // Gift wrap checkbox
+                const giftWrapCheckbox = document.getElementById('gift-wrap');
+                if (giftWrapCheckbox) {
+                    giftWrapCheckbox.addEventListener('change', (e) => {
+                        this.updateGiftWrap(e.target.checked);
+                    });
+                }
             }
             
             updateItemQuantity(id, newQuantity) {
@@ -1576,6 +1650,21 @@
                 this.animateUpdate('summary-total');
             }
             
+            updateGiftWrap(isChecked) {
+                // This would adjust delivery cost or add gift wrap fee
+                // For now, just update the UI
+                const deliveryElement = document.getElementById('delivery-value');
+                const currentDelivery = this.cartManager.getDelivery();
+                const newDelivery = isChecked ? currentDelivery + 500 : currentDelivery - 500;
+                
+                this.cartManager.deliveryCost = isChecked ? 1000 : 500;
+                this.updateSummary();
+                
+                this.showNotification(isChecked ? 
+                    '🎀 Праздничная упаковка добавлена!' : 
+                    '📦 Праздничная упаковка удалена', 'info');
+            }
+            
             animateUpdate(elementId) {
                 const element = document.getElementById(elementId);
                 if (element) {
@@ -1590,6 +1679,17 @@
                 const checkoutBtn = document.getElementById('checkout-btn');
                 const originalText = checkoutBtn.innerHTML;
                 
+                // Validate form
+                const name = document.getElementById('name').value;
+                const phone = document.getElementById('phone').value;
+                const email = document.getElementById('email').value;
+                const address = document.getElementById('address').value;
+                
+                if (!name || !phone || !email || !address) {
+                    this.showNotification('Пожалуйста, заполните все обязательные поля', 'error');
+                    return;
+                }
+                
                 try {
                     // Show loading state
                     checkoutBtn.innerHTML = '<span class="spinner"></span> Оформление...';
@@ -1597,30 +1697,49 @@
                     
                     // Get form data
                     const formData = {
-                        name: document.getElementById('name').value,
-                        phone: document.getElementById('phone').value,
-                        email: document.getElementById('email').value,
-                        address: document.getElementById('address').value,
+                        name: name,
+                        phone: phone,
+                        email: email,
+                        address: address,
                         comment: document.getElementById('comment').value,
+                        deliveryDate: document.getElementById('delivery-date').value,
+                        giftWrap: document.getElementById('gift-wrap').checked,
                         items: this.cartManager.cart,
-                        total: this.cartManager.getTotal(),
-                        discount: this.cartManager.discount,
+                        subtotal: this.cartManager.getSubtotal(),
+                        delivery: this.cartManager.deliveryCost,
+                        discount: this.cartManager.getDiscountAmount(),
                         discountCode: this.cartManager.discountCode,
-                        date: new Date().toISOString()
+                        total: this.cartManager.getTotal()
                     };
                     
-                    // Simulate API call with Christmas delay
+                    // Simulate API call
                     await new Promise(resolve => setTimeout(resolve, 2000));
                     
                     // Generate Christmas-themed order number
                     const now = new Date();
                     const orderNumber = `WD-${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}${Math.floor(100 + Math.random() * 900)}`;
                     
+                    // ====== ОТПРАВКА ЗАКАЗА В АДМИН-ПАНЕЛЬ ======
+                    const adminSuccess = await this.sendOrderToAdminPanel(formData, orderNumber);
+                    // ============================================
+                    
                     // Create big celebration animation
                     createGiftAnimation(50);
                     
-                    // Show success modal
+                    // Show success modal with admin status
                     document.getElementById('order-number').textContent = orderNumber;
+                    const statusElement = document.getElementById('order-sent-status');
+                    
+                    if (adminSuccess) {
+                        statusElement.innerHTML = '<i class="fas fa-paper-plane"></i> Заказ успешно отправлен в мастерскую';
+                        statusElement.style.background = '#E8F5E9';
+                        statusElement.style.color = 'var(--primary-color)';
+                    } else {
+                        statusElement.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Заказ сохранен, но мастерская временно недоступна';
+                        statusElement.style.background = '#FFF3E0';
+                        statusElement.style.color = '#FF9800';
+                    }
+                    
                     document.getElementById('success-modal').style.display = 'flex';
                     
                     // Clear cart
@@ -1631,11 +1750,125 @@
                     
                 } catch (error) {
                     console.error('Order processing error:', error);
-                    alert('Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз.');
+                    this.showNotification('Произошла ошибка при оформлении заказа. Пожалуйста, попробуйте еще раз.', 'error');
                 } finally {
                     // Restore button
                     checkoutBtn.innerHTML = originalText;
                     checkoutBtn.disabled = false;
+                }
+            }
+            
+            // ==================== INTEGRATION WITH ADMIN PANEL ====================
+            async sendOrderToAdminPanel(orderData, orderNumber) {
+                try {
+                    // Create complete order object
+                    const now = new Date();
+                    const completeOrder = {
+                        id: orderNumber,
+                        date: now.toISOString().split('T')[0],
+                        time: now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+                        timestamp: now.getTime(),
+                        customer: {
+                            name: orderData.name,
+                            phone: orderData.phone,
+                            email: orderData.email,
+                            address: orderData.address
+                        },
+                        items: orderData.items.map(item => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity,
+                            color: item.color,
+                            icon: item.icon,
+                            category: item.category,
+                            features: item.features || []
+                        })),
+                        subtotal: orderData.subtotal,
+                        delivery: orderData.delivery,
+                        discount: orderData.discount,
+                        discountCode: orderData.discountCode,
+                        total: orderData.total,
+                        comment: `${orderData.comment || ''} ${orderData.deliveryDate ? `Желаемая дата доставки: ${orderData.deliveryDate}` : ''} ${orderData.giftWrap ? 'С праздничной упаковкой' : ''}`.trim(),
+                        status: 'pending',
+                        statusHistory: [
+                            { 
+                                status: 'pending', 
+                                timestamp: now.getTime(), 
+                                note: 'Заказ создан клиентом на сайте' 
+                            }
+                        ],
+                        assignedTo: null,
+                        isNew: true,
+                        source: 'website',
+                        deliveryDate: orderData.deliveryDate || '',
+                        giftWrap: orderData.giftWrap || false,
+                        additionalInfo: {
+                            giftWrap: orderData.giftWrap,
+                            deliveryDate: orderData.deliveryDate
+                        }
+                    };
+                    
+                    // Method 1: Direct localStorage update
+                    let allOrders = JSON.parse(localStorage.getItem('woodadvent_orders') || '[]');
+                    allOrders.unshift(completeOrder);
+                    localStorage.setItem('woodadvent_orders', JSON.stringify(allOrders));
+                    
+                    // Update order counter
+                    const currentId = parseInt(localStorage.getItem('woodadvent_current_order_id') || '1000');
+                    localStorage.setItem('woodadvent_current_order_id', (currentId + 1).toString());
+                    
+                    // Method 2: Set notification for admin panel
+                    localStorage.setItem('woodadvent_new_order', JSON.stringify(completeOrder));
+                    localStorage.setItem('woodadvent_order_notification', Date.now().toString());
+                    
+                    // Method 3: Try to send to parent window (if admin panel is open)
+                    if (window.opener) {
+                        try {
+                            window.opener.postMessage({
+                                type: 'newOrder',
+                                order: completeOrder,
+                                timestamp: Date.now()
+                            }, '*');
+                        } catch (e) {
+                            console.log('Не удалось отправить сообщение в родительское окно');
+                        }
+                    }
+                    
+                    // Method 4: Broadcast to other tabs
+                    const broadcastChannel = new BroadcastChannel('woodadvent_orders');
+                    broadcastChannel.postMessage({
+                        type: 'newOrder',
+                        order: completeOrder
+                    });
+                    broadcastChannel.close();
+                    
+                    console.log('Заказ отправлен в админ-панель:', completeOrder);
+                    
+                    // Update admin connection status
+                    checkAdminConnection();
+                    
+                    // Show notification
+                    this.showNotification('Заказ успешно отправлен в мастерскую!', 'success');
+                    
+                    return true;
+                    
+                } catch (error) {
+                    console.error('Error sending order to admin panel:', error);
+                    
+                    // Fallback: Save order locally for later sync
+                    const failedOrders = JSON.parse(localStorage.getItem('woodadvent_failed_orders') || '[]');
+                    failedOrders.push({
+                        orderData: orderData,
+                        orderNumber: orderNumber,
+                        timestamp: Date.now(),
+                        error: error.message
+                    });
+                    localStorage.setItem('woodadvent_failed_orders', JSON.stringify(failedOrders));
+                    
+                    this.showNotification('Заказ сохранен, будет отправлен в мастерскую при восстановлении связи', 'warning');
+                    
+                    return false;
                 }
             }
             
@@ -1661,6 +1894,45 @@
                     }, i * 100);
                 }
             }
+            
+            showNotification(message, type = 'success') {
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    z-index: 1001;
+                    animation: slideIn 0.3s ease;
+                    border-left: 4px solid ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : '#FF9800'};
+                `;
+                
+                const icon = type === 'success' ? 'fas fa-check-circle' : 
+                            type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-exclamation-triangle';
+                
+                notification.innerHTML = `
+                    <i class="${icon}" style="color: ${type === 'success' ? 'var(--success-color)' : type === 'error' ? 'var(--error-color)' : '#FF9800'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Auto remove
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 300);
+                }, 3000);
+            }
         }
 
         // Initialize cart on page load
@@ -1672,6 +1944,9 @@
             setTimeout(() => {
                 createGiftAnimation(10);
             }, 1000);
+            
+            // Check admin connection
+            checkAdminConnection();
             
             // Create cart manager and renderer
             const cartManager = new CartManager();
@@ -1696,13 +1971,23 @@
                 }
             });
             
-            // Listen for storage changes (in case cart is updated in another tab)
+            // Listen for storage changes (for admin panel updates)
             window.addEventListener('storage', (e) => {
-                if (e.key === 'woodadvent_cart') {
-                    cartManager.cart = cartManager.loadCart();
-                    cartRenderer.render();
+                if (e.key === 'woodadvent_orders') {
+                    checkAdminConnection();
                 }
             });
+            
+            // Listen for broadcast messages from admin panel
+            const broadcastChannel = new BroadcastChannel('woodadvent_orders');
+            broadcastChannel.addEventListener('message', (event) => {
+                if (event.data.type === 'orderProcessed') {
+                    cartRenderer.showNotification(`Ваш заказ ${event.data.orderId} взят в работу!`, 'info');
+                }
+            });
+            
+            // Periodically check admin connection
+            setInterval(checkAdminConnection, 5000);
             
             // Periodically create gift animations
             setInterval(() => {
@@ -1711,6 +1996,20 @@
                 }
             }, 5000);
         });
+
+        // Add CSS animations for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
