@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WoodAdvent - Деревянные адвент-календари ручной работы</title>
+    <title>WoodAdvent - Деревянные новогодние календари ручной работы</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -14,31 +14,71 @@
         }
         
         :root {
-            --primary-color: #8B4513;
-            --secondary-color: #A0522D;
-            --accent-color: #D2691E;
-            --light-wood: #DEB887;
-            --dark-wood: #654321;
-            --light-color: #FAF0E6;
-            --text-color: #333;
-            --light-bg: #FFF8DC;
+            --primary-color: #2E7D32;
+            --secondary-color: #C62828;
+            --accent-color: #FF8F00;
+            --light-color: #FFF8E1;
+            --dark-color: #1B5E20;
+            --snow-color: #E3F2FD;
+            --gold-color: #FFD700;
+            --text-color: #1A237E;
+            --light-bg: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 50%, #F9FBE7 100%);
         }
         
         body {
-            background-color: var(--light-bg);
+            background: var(--light-bg);
             color: var(--text-color);
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Snowflakes animation */
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+        
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
         
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
             color: white;
             padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(46, 125, 50, 0.3);
             position: sticky;
             top: 0;
             z-index: 100;
+            border-bottom: 3px solid var(--gold-color);
         }
         
         .container {
@@ -61,10 +101,12 @@
             font-weight: bold;
             text-decoration: none;
             color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .logo i {
-            color: var(--light-wood);
+            color: var(--gold-color);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
         }
         
         nav ul {
@@ -77,28 +119,29 @@
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 0;
+            padding: 0.5rem 1rem;
             position: relative;
             transition: all 0.3s;
+            border-radius: 5px;
         }
         
         nav a:hover {
-            color: var(--light-wood);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--gold-color);
         }
         
         nav a.active {
-            color: var(--light-wood);
+            color: var(--gold-color);
+            background-color: rgba(255, 215, 0, 0.1);
         }
         
         nav a.active::after {
-            content: '';
+            content: '❄';
             position: absolute;
-            width: 100%;
-            height: 3px;
-            background-color: var(--light-wood);
-            bottom: -5px;
-            left: 0;
-            border-radius: 2px;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
         }
         
         .cart-icon {
@@ -107,76 +150,137 @@
             cursor: pointer;
             color: white;
             text-decoration: none;
+            transition: transform 0.3s;
+        }
+        
+        .cart-icon:hover {
+            transform: scale(1.1);
+            color: var(--gold-color);
         }
         
         .cart-count {
             position: absolute;
             top: -8px;
             right: -8px;
-            background-color: var(--accent-color);
+            background-color: var(--secondary-color);
             color: white;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 0.8rem;
             font-weight: bold;
+            border: 2px solid white;
         }
         
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(139, 69, 19, 0.85), rgba(160, 82, 45, 0.9)), url('https://images.unsplash.com/photo-1544787219-7f47ccb76574?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(46, 125, 50, 0.9), rgba(27, 94, 32, 0.95)), url('https://images.unsplash.com/photo-1512389142860-9c449e58a543?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 4rem 0;
+            padding: 5rem 0;
             text-align: center;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 30px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '🎄';
+            position: absolute;
+            font-size: 10rem;
+            opacity: 0.1;
+            top: 50%;
+            left: 10%;
+            transform: translateY(-50%);
+        }
+        
+        .hero::after {
+            content: '⭐';
+            position: absolute;
+            font-size: 8rem;
+            opacity: 0.1;
+            top: 30%;
+            right: 10%;
+            transform: translateY(-50%);
         }
         
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
         }
         
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             max-width: 800px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 3rem;
+            position: relative;
+            z-index: 2;
         }
         
         .btn {
             display: inline-block;
-            background-color: var(--accent-color);
+            background: linear-gradient(135deg, var(--accent-color), #FF6F00);
             color: white;
-            padding: 0.8rem 1.8rem;
+            padding: 1rem 2.5rem;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
             transition: all 0.3s;
             border: none;
             cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 143, 0, 0.4);
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         
         .btn:hover {
-            background-color: #c57a3a;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, #FF6F00, #E65100);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 143, 0, 0.6);
         }
         
         /* Tabs Section */
         .tabs-section {
-            padding: 3rem 0;
+            padding: 4rem 0;
+            position: relative;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
             color: var(--primary-color);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .section-title::after {
+            content: '🎅';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+        }
+        
+        .section-title::before {
+            content: '🎁';
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
         }
         
         .tabs {
@@ -184,27 +288,41 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
         }
         
         .tab-btn {
-            padding: 0.8rem 1.5rem;
-            background-color: white;
+            padding: 1rem 2rem;
+            background: white;
             border: 2px solid var(--primary-color);
             border-radius: 50px;
             color: var(--primary-color);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
         }
         
         .tab-btn:hover {
-            background-color: var(--light-color);
+            background: var(--snow-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.2);
         }
         
         .tab-btn.active {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
             color: white;
+            border-color: var(--gold-color);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .tab-btn.active::before {
+            content: '❄';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
         .tab-content {
@@ -217,86 +335,128 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         /* Products Grid */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
         }
         
         .product-card {
-            background-color: white;
-            border-radius: 10px;
+            background: white;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.1);
-            transition: all 0.3s;
-            border: 1px solid #DEB887;
+            box-shadow: 0 10px 30px rgba(46, 125, 50, 0.15);
+            transition: all 0.4s;
+            border: 2px solid var(--primary-color);
+            position: relative;
         }
         
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(139, 69, 19, 0.15);
-        }
-        
-        .product-img {
-            height: 200px;
-            background-color: var(--light-wood);
+        .product-card::before {
+            content: '🎄';
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--dark-wood);
-            font-size: 4rem;
+            font-size: 1.2rem;
+            z-index: 2;
+            box-shadow: 0 3px 10px rgba(198, 40, 40, 0.3);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-15px) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(46, 125, 50, 0.25);
+        }
+        
+        .product-img {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
         }
         
         .product-content {
-            padding: 1.5rem;
+            padding: 1.8rem;
         }
         
         .product-category {
             font-size: 0.9rem;
             font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            color: var(--secondary-color);
+            letter-spacing: 1px;
         }
         
         .product-title {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: var(--dark-wood);
+            font-size: 1.4rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark-color);
+            font-weight: 700;
         }
         
         .product-description {
             color: #666;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             font-size: 0.95rem;
+            line-height: 1.7;
         }
         
         .product-features {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 1rem 0;
+            gap: 0.6rem;
+            margin: 1.2rem 0;
         }
         
         .product-feature {
-            background-color: #FAF0E6;
-            color: var(--primary-color);
-            padding: 0.3rem 0.6rem;
+            background: linear-gradient(135deg, var(--snow-color), #E8F5E9);
+            color: var(--dark-color);
+            padding: 0.4rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
+            border: 1px solid var(--primary-color);
         }
         
         .product-price {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+            color: var(--secondary-color);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .product-price::before {
+            content: '💰';
+            font-size: 1.2rem;
         }
         
         .product-footer {
@@ -306,22 +466,33 @@
         }
         
         .rating {
-            color: #ffc107;
+            color: var(--gold-color);
+            font-size: 1.1rem;
         }
         
         /* About Section */
         .about-section {
-            background-color: white;
-            padding: 3rem 0;
-            margin-top: 2rem;
-            border-top: 2px solid var(--light-wood);
-            border-bottom: 2px solid var(--light-wood);
+            background: linear-gradient(135deg, white, var(--snow-color));
+            padding: 4rem 0;
+            margin-top: 3rem;
+            border-top: 5px solid var(--primary-color);
+            border-bottom: 5px solid var(--secondary-color);
+            position: relative;
+        }
+        
+        .about-section::before {
+            content: '✨';
+            position: absolute;
+            font-size: 5rem;
+            opacity: 0.1;
+            top: 20px;
+            left: 20px;
         }
         
         .about-content {
             display: flex;
             align-items: center;
-            gap: 3rem;
+            gap: 4rem;
         }
         
         .about-text {
@@ -330,72 +501,134 @@
         
         .about-text ul {
             margin-left: 1.5rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
         
         .about-text li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 10px;
+        }
+        
+        .about-text li::before {
+            content: '🎯';
+            position: absolute;
+            left: -25px;
         }
         
         .about-image {
             flex: 1;
-            height: 300px;
-            background-color: var(--light-wood);
-            border-radius: 10px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 5rem;
-            color: var(--dark-wood);
+            font-size: 6rem;
+            color: var(--gold-color);
+            box-shadow: 0 15px 30px rgba(46, 125, 50, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.05) 10px,
+                rgba(255, 255, 255, 0.05) 20px
+            );
         }
         
         /* Benefits Section */
         .benefits-section {
-            padding: 3rem 0;
-            background-color: #FFF8F0;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #FFFDE7, #FFF9C4);
+            position: relative;
         }
         
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
         }
         
         .benefit-card {
             text-align: center;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.08);
-            border-top: 4px solid var(--accent-color);
+            padding: 2.5rem 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 143, 0, 0.15);
+            border-top: 5px solid var(--accent-color);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(255, 143, 0, 0.25);
         }
         
         .benefit-card i {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
         }
         
         /* Footer */
         footer {
-            background-color: var(--dark-wood);
+            background: linear-gradient(135deg, var(--dark-color), #1A237E);
             color: white;
-            padding: 3rem 0 1.5rem;
-            margin-top: 3rem;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M1200 0L0 0 598.97 114.72 1200 0z' fill='%231B5E20'/%3E%3C/svg%3E");
+            background-size: cover;
         }
         
         .footer-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
         }
         
         .footer-column h3 {
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-            color: var(--light-wood);
+            margin-bottom: 1.8rem;
+            font-size: 1.4rem;
+            color: var(--gold-color);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--gold-color);
+            border-radius: 2px;
         }
         
         .footer-links {
@@ -403,22 +636,39 @@
         }
         
         .footer-links li {
-            margin-bottom: 0.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         .footer-links a {
             color: #ddd;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
         .footer-links a:hover {
-            color: var(--light-wood);
+            color: var(--gold-color);
+            transform: translateX(5px);
+        }
+        
+        .footer-links a::before {
+            content: '➡️';
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover::before {
+            opacity: 1;
         }
         
         .copyright {
             text-align: center;
-            padding-top: 1.5rem;
+            padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: #aaa;
             font-size: 0.9rem;
@@ -427,42 +677,30 @@
         /* Notification */
         .notification {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--success-color);
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 1.2rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             z-index: 1000;
-            transform: translateY(100px);
+            transform: translateX(150%);
             opacity: 0;
-            transition: all 0.3s;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 5px solid var(--gold-color);
         }
         
         .notification.show {
-            transform: translateY(0);
+            transform: translateX(0);
             opacity: 1;
         }
         
         /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            nav ul {
-                gap: 1rem;
-            }
-            
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
+        @media (max-width: 992px) {
             .about-content {
                 flex-direction: column;
             }
@@ -472,7 +710,33 @@
             }
         }
         
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .section-title::before,
+            .section-title::after {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 576px) {
             .tabs {
                 flex-direction: column;
                 align-items: center;
@@ -480,12 +744,23 @@
             
             .tab-btn {
                 width: 100%;
-                max-width: 250px;
+                max-width: 300px;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Snowflakes -->
+    <div class="snowflakes" id="snowflakes"></div>
+    
     <!-- Header -->
     <header>
         <div class="container">
@@ -516,8 +791,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Деревянные адвент-календари ручной работы</h1>
-            <p>Эксклюзивные деревянные адвент-календари из натурального дерева. Каждое изделие создается вручную с любовью и вниманием к деталям. Подарите себе и близким волшебство ожидания праздника!</p>
+            <h1>Деревянные новогодние календари ручной работы</h1>
+            <p>Волшебные деревянные адвент-календари из натурального дерева создадут настоящую сказку в вашем доме! Каждое изделие — уникальный подарок, наполненный любовью и праздничным настроением.</p>
             <a href="#products" class="btn">Выбрать календарь</a>
         </div>
     </section>
@@ -525,33 +800,33 @@
     <!-- Tabs Section -->
     <section class="tabs-section" id="products">
         <div class="container">
-            <h2 class="section-title">Категории деревянных календарей</h2>
+            <h2 class="section-title">Новогодние календари</h2>
             
             <div class="tabs">
                 <button class="tab-btn active" data-tab="all">Все календари</button>
                 <button class="tab-btn" data-tab="house">Домики</button>
                 <button class="tab-btn" data-tab="wall">Настенные</button>
                 <button class="tab-btn" data-tab="table">Настольные</button>
-                <button class="tab-btn" data-tab="personalized">Персонализированные</button>
+                <button class="tab-btn" data-tab="personalized">С гравировкой</button>
             </div>
             
             <div class="tab-content active" id="tab-all">
                 <div class="products-grid">
                     <!-- Product 1 -->
                     <div class="product-card" data-category="house" data-id="1">
-                        <div class="product-img" style="background-color: #DEB887;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #2E7D32, #4CAF50);">
                             <i class="fas fa-home"></i>
                         </div>
                         <div class="product-content">
                             <div class="product-category">Домики</div>
-                            <h3 class="product-title">Деревянный домик "Сказочный лес"</h3>
-                            <p class="product-description">Уютный деревянный домик с 24 окошками. Идеально подходит для создания праздничной атмосферы в интерьере.</p>
+                            <h3 class="product-title">Новогодний домик "Сказочный лес"</h3>
+                            <p class="product-description">Волшебный деревянный домик с 24 окошками, украшенный новогодней иллюминацией. Создаст праздничное настроение в вашем доме!</p>
                             <div class="product-features">
-                                <span class="product-feature">Массив сосны</span>
+                                <span class="product-feature">Светодиоды</span>
                                 <span class="product-feature">Ручная работа</span>
-                                <span class="product-feature">24 отделения</span>
+                                <span class="product-feature">24 сюрприза</span>
                             </div>
-                            <div class="product-price">7 499 ₽</div>
+                            <div class="product-price">7 999 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -567,19 +842,19 @@
                     
                     <!-- Product 2 -->
                     <div class="product-card" data-category="wall" data-id="2">
-                        <div class="product-img" style="background-color: #D2B48C;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #C62828, #D32F2F);">
                             <i class="fas fa-th-large"></i>
                         </div>
                         <div class="product-content">
                             <div class="product-category">Настенные</div>
-                            <h3 class="product-title">Резной календарь "Русские узоры"</h3>
-                            <p class="product-description">Искусная резьба по дереву в традиционном русском стиле. Настенное крепление в комплекте.</p>
+                            <h3 class="product-title">Календарь "Праздничные узоры"</h3>
+                            <p class="product-description">Искусная резьба по дереву с новогодними мотивами. Украсит любую стену и создаст атмосферу праздника.</p>
                             <div class="product-features">
-                                <span class="product-feature">Массив ясеня</span>
-                                <span class="product-feature">Ручная резьба</span>
+                                <span class="product-feature">Резные снежинки</span>
                                 <span class="product-feature">Настенный</span>
+                                <span class="product-feature">24 кармашка</span>
                             </div>
-                            <div class="product-price">9 999 ₽</div>
+                            <div class="product-price">10 499 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -595,19 +870,19 @@
                     
                     <!-- Product 3 -->
                     <div class="product-card" data-category="table" data-id="3">
-                        <div class="product-img" style="background-color: #BC8F8F;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #FF8F00, #FFA000);">
                             <i class="fas fa-gift"></i>
                         </div>
                         <div class="product-content">
                             <div class="product-category">Настольные</div>
-                            <h3 class="product-title">Календарь-сундук "Сокровища декабря"</h3>
-                            <p class="product-description">Деревянный сундук с 24 выдвижными ящичками. После праздника можно использовать для хранения мелочей.</p>
+                            <h3 class="product-title">Сундук "Новогодние сокровища"</h3>
+                            <p class="product-description">Деревянный сундук с 24 ящичками в праздничном оформлении. После праздников станет украшением интерьера.</p>
                             <div class="product-features">
-                                <span class="product-feature">Массив дуба</span>
-                                <span class="product-feature">Фурнитура из латуни</span>
+                                <span class="product-feature">Золотая фурнитура</span>
                                 <span class="product-feature">Многоразовый</span>
+                                <span class="product-feature">Подарочная упаковка</span>
                             </div>
-                            <div class="product-price">12 499 ₽</div>
+                            <div class="product-price">13 999 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -623,19 +898,19 @@
                     
                     <!-- Product 4 -->
                     <div class="product-card" data-category="personalized" data-id="4">
-                        <div class="product-img" style="background-color: #CD853F;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #1B5E20, #2E7D32);">
                             <i class="fas fa-user-edit"></i>
                         </div>
                         <div class="product-content">
-                            <div class="product-category">Персонализированные</div>
-                            <h3 class="product-title">Календарь с гравировкой имени</h3>
-                            <p class="product-description">Деревянный календарь с индивидуальной гравировкой имени получателя. Уникальный подарок на долгую память.</p>
+                            <div class="product-category">С гравировкой</div>
+                            <h3 class="product-title">Календарь с именной гравировкой</h3>
+                            <p class="product-description">Уникальный подарок с индивидуальной гравировкой имени. Создаст незабываемые воспоминания о празднике.</p>
                             <div class="product-features">
-                                <span class="product-feature">Индивидуальная гравировка</span>
-                                <span class="product-feature">Массив ореха</span>
+                                <span class="product-feature">Имя на заказ</span>
+                                <span class="product-feature">Поздравительная надпись</span>
                                 <span class="product-feature">Эксклюзив</span>
                             </div>
-                            <div class="product-price">8 999 ₽</div>
+                            <div class="product-price">9 499 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -651,19 +926,19 @@
                     
                     <!-- Product 5 -->
                     <div class="product-card" data-category="house" data-id="5">
-                        <div class="product-img" style="background-color: #F4A460;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #D32F2F, #F44336);">
                             <i class="fas fa-mountain"></i>
                         </div>
                         <div class="product-content">
                             <div class="product-category">Домики</div>
-                            <h3 class="product-title">Трехэтажный домик "Альпийское шале"</h3>
-                            <p class="product-description">Трехэтажный деревянный домик в стиле альпийского шале. Создаст атмосферу горного курорта у вас дома.</p>
+                            <h3 class="product-title">Трехэтажный домик "Зимняя сказка"</h3>
+                            <p class="product-description">Роскошный трехэтажный домик с подсветкой и искусственным снегом. Настоящий зимний дворец для самых важных сюрпризов.</p>
                             <div class="product-features">
                                 <span class="product-feature">3 этажа</span>
-                                <span class="product-feature">Светодиодная подсветка</span>
-                                <span class="product-feature">Размер 40x25 см</span>
+                                <span class="product-feature">Искусственный снег</span>
+                                <span class="product-feature">Музыкальный модуль</span>
                             </div>
-                            <div class="product-price">15 999 ₽</div>
+                            <div class="product-price">17 999 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -679,19 +954,19 @@
                     
                     <!-- Product 6 -->
                     <div class="product-card" data-category="wall" data-id="6">
-                        <div class="product-img" style="background-color: #DAA520;">
+                        <div class="product-img" style="background: linear-gradient(135deg, #FFA000, #FFB300);">
                             <i class="fas fa-tree"></i>
                         </div>
                         <div class="product-content">
                             <div class="product-category">Настенные</div>
-                            <h3 class="product-title">Календарь-елка "Лесная красавица"</h3>
-                            <p class="product-description">Календарь в форме елки с 24 кармашками в виде елочных шаров. Украсит любой интерьер к праздникам.</p>
+                            <h3 class="product-title">Календарь-елка "Золотая хвоя"</h3>
+                            <p class="product-description">Календарь в форме елки с позолоченными элементами. Каждый день декабря — новый шарик с сюрпризом!</p>
                             <div class="product-features">
                                 <span class="product-feature">Форма елки</span>
-                                <span class="product-feature">24 кармашка</span>
+                                <span class="product-feature">Позолота</span>
                                 <span class="product-feature">Настенный</span>
                             </div>
-                            <div class="product-price">6 799 ₽</div>
+                            <div class="product-price">8 799 ₽</div>
                             <div class="product-footer">
                                 <div class="rating">
                                     <i class="fas fa-star"></i>
@@ -736,42 +1011,42 @@
     <!-- Benefits Section -->
     <section class="benefits-section" id="benefits">
         <div class="container">
-            <h2 class="section-title">Почему выбирают деревянные адвент-календари?</h2>
+            <h2 class="section-title">Почему выбирают наши новогодние календари?</h2>
             <div class="benefits-grid">
                 <div class="benefit-card">
-                    <i class="fas fa-leaf"></i>
-                    <h3>Экологичность</h3>
-                    <p>Изготовлены из натурального дерева, безопасны для здоровья и окружающей среды.</p>
+                    <i class="fas fa-star"></i>
+                    <h3>Новогодняя магия</h3>
+                    <p>Каждый календарь создает волшебную атмосферу ожидания праздника</p>
                 </div>
                 
                 <div class="benefit-card">
-                    <i class="fas fa-recycle"></i>
-                    <h3>Многоразовые</h3>
-                    <p>Можно использовать год за годом, наполняя своими сюрпризами.</p>
+                    <i class="fas fa-snowflake"></i>
+                    <h3>Зимнее настроение</h3>
+                    <p>Дизайн вдохновлен зимними пейзажами и новогодними традициями</p>
                 </div>
                 
                 <div class="benefit-card">
-                    <i class="fas fa-hands"></i>
-                    <h3>Ручная работа</h3>
-                    <p>Каждое изделие создается вручную с любовью и вниманием к деталям.</p>
+                    <i class="fas fa-gift"></i>
+                    <h3>Идеальный подарок</h3>
+                    <p>Эксклюзивный подарок, который запомнится на всю жизнь</p>
                 </div>
                 
                 <div class="benefit-card">
                     <i class="fas fa-heart"></i>
-                    <h3>Уникальность</h3>
-                    <p>Нет двух одинаковых календарей, каждое изделие имеет свой характер.</p>
+                    <h3>С любовью к деталям</h3>
+                    <p>Каждое изделие создается с особой теплотой и вниманием</p>
                 </div>
                 
                 <div class="benefit-card">
                     <i class="fas fa-home"></i>
                     <h3>Украшение интерьера</h3>
-                    <p>Станут стильным элементом декора даже после праздников.</p>
+                    <p>Станут главным новогодним украшением вашего дома</p>
                 </div>
                 
                 <div class="benefit-card">
                     <i class="fas fa-award"></i>
-                    <h3>Долговечность</h3>
-                    <p>Прочные деревянные конструкции прослужат многим поколениям.</p>
+                    <h3>Качество и долговечность</h3>
+                    <p>Прочные конструкции и качественные материалы</p>
                 </div>
             </div>
         </div>
@@ -780,28 +1055,28 @@
     <!-- About Section -->
     <section class="about-section" id="about">
         <div class="container">
-            <h2 class="section-title">О нашей мастерской</h2>
+            <h2 class="section-title">О нашей новогодней мастерской</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p><strong>WoodAdvent</strong> - это семейная мастерская, специализирующаяся на создании деревянных адвент-календарей ручной работы. Мы работаем с 2015 года и за это время создали более 2000 уникальных календарей, которые радуют семьи по всей России.</p>
+                    <p><strong>WoodAdvent</strong> - это семейная мастерская, где рождается новогоднее волшебство. С 2015 года мы создаем уникальные деревянные адвент-календари, которые дарят радость и предвкушение праздника.</p>
                     
-                    <p>Наши мастера - настоящие профессионалы, которые вкладывают душу в каждое изделие. Мы используем только качественные материалы: массив дуба, ясеня, сосны и ореха, экологичные лаки и краски на водной основе.</p>
+                    <p>Наши мастера вкладывают в каждое изделие частичку новогоднего настроения. Мы используем только экологичные материалы и безопасные краски, чтобы наши календари были не только красивыми, но и безопасными для детей.</p>
                     
-                    <p>Мы убеждены, что адвент-календарь - это не просто способ отсчитать дни до праздника, а возможность создать семейную традицию, теплые воспоминания и волшебную атмосферу ожидания.</p>
+                    <p>Мы верим, что адвент-календарь — это не просто отсчет дней до праздника, а возможность создать семейную традицию, наполнить дом теплом и ожиданием чуда.</p>
                     
-                    <h3 style="margin-top: 1.5rem; color: var(--primary-color);">Наши преимущества:</h3>
+                    <h3 style="margin-top: 1.5rem; color: var(--secondary-color);">Наши праздничные преимущества:</h3>
                     <ul>
-                        <li>Индивидуальный подход к каждому заказу</li>
-                        <li>Возможность персонализации (гравировка, выбор цвета, размеров)</li>
-                        <li>Использование только экологичных материалов</li>
-                        <li>Гарантия на все изделия 2 года</li>
-                        <li>Доставка по всей России и СНГ</li>
+                        <li>Новогодний дизайн с зимними мотивами</li>
+                        <li>Индивидуальная гравировка с поздравлениями</li>
+                        <li>Праздничная подарочная упаковка</li>
+                        <li>Быстрая доставка к праздникам</li>
+                        <li>Бесплатная праздничная открытка</li>
                     </ul>
                     
-                    <a href="#contacts" class="btn" style="margin-top: 1.5rem;">Связаться с нами</a>
+                    <a href="#contacts" class="btn" style="margin-top: 2rem;">Заказать волшебство</a>
                 </div>
                 <div class="about-image">
-                    <i class="fas fa-hammer"></i>
+                    <i class="fas fa-holly-berry"></i>
                 </div>
             </div>
         </div>
@@ -813,39 +1088,39 @@
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>WoodAdvent</h3>
-                    <p>Мастерская деревянных адвент-календарей ручной работы. Создаем волшебство ожидания праздника с 2015 года.</p>
-                    <div style="margin-top: 1rem; display: flex; gap: 1rem; font-size: 1.5rem;">
-                        <a href="#" style="color: white;"><i class="fab fa-vk"></i></a>
-                        <a href="#" style="color: white;"><i class="fab fa-telegram"></i></a>
-                        <a href="#" style="color: white;"><i class="fab fa-instagram"></i></a>
-                        <a href="#" style="color: white;"><i class="fab fa-youtube"></i></a>
+                    <p>Мастерская новогодних деревянных календарей. Создаем праздничное настроение и зимнее волшебство с 2015 года.</p>
+                    <div style="margin-top: 1.5rem; display: flex; gap: 1.5rem; font-size: 1.8rem;">
+                        <a href="#" style="color: var(--gold-color); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-vk"></i></a>
+                        <a href="#" style="color: var(--gold-color); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-telegram"></i></a>
+                        <a href="#" style="color: var(--gold-color); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: var(--gold-color); transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'"><i class="fab fa-youtube"></i></a>
                     </div>
                 </div>
                 
                 <div class="footer-column">
-                    <h3>Категории календарей</h3>
+                    <h3>Новогодние календари</h3>
                     <ul class="footer-links">
-                        <li><a href="#products">Деревянные домики</a></li>
-                        <li><a href="#products">Настенные календари</a></li>
-                        <li><a href="#products">Настольные календари</a></li>
-                        <li><a href="#products">Персонализированные</a></li>
-                        <li><a href="#products">Эксклюзивные модели</a></li>
+                        <li><a href="#products"><i class="fas fa-home"></i> Праздничные домики</a></li>
+                        <li><a href="#products"><i class="fas fa-tree"></i> Елки-календари</a></li>
+                        <li><a href="#products"><i class="fas fa-gift"></i> Настольные сундуки</a></li>
+                        <li><a href="#products"><i class="fas fa-user-edit"></i> С гравировкой</a></li>
+                        <li><a href="#products"><i class="fas fa-star"></i> Эксклюзивные модели</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-column">
-                    <h3>Контакты</h3>
+                    <h3>Контактная информация</h3>
                     <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> Москва, ул. Деревообрабатывающая, 15</li>
-                        <li><i class="fas fa-phone"></i> +7 (495) 123-45-67</li>
-                        <li><i class="fas fa-envelope"></i> info@woodadvent.ru</li>
-                        <li><i class="fas fa-clock"></i> Пн-Пт: 9:00-20:00, Сб: 10:00-18:00</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Уфа, ул. Снежная, 25</li>
+                        <li><i class="fas fa-phone"></i> +7 (347) 123-45-67</li>
+                        <li><i class="fas fa-envelope"></i> magic@woodadvent.ru</li>
+                        <li><i class="fas fa-clock"></i> Пн-Вс: 9:00-21:00 (праздничный график)</li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2023 WoodAdvent. Мастерская деревянных адвент-календарей. Все права защищены.</p>
+                <p>🎄 &copy; 2025 WoodAdvent. Мастерская новогодних волшебных календарей. Все права защищены. 🎄</p>
             </div>
         </div>
     </footer>
@@ -861,59 +1136,89 @@
         const products = {
             1: {
                 id: 1,
-                name: "Деревянный домик 'Сказочный лес'",
+                name: "Новогодний домик 'Сказочный лес'",
                 category: "Домики",
-                price: 7499,
+                price: 7999,
                 icon: "fa-home",
-                color: "#DEB887",
-                features: ["Массив сосны", "Ручная работа", "24 отделения"]
+                color: "#2E7D32",
+                features: ["Светодиоды", "Ручная работа", "24 сюрприза"]
             },
             2: {
                 id: 2,
-                name: "Резной календарь 'Русские узоры'",
+                name: "Календарь 'Праздничные узоры'",
                 category: "Настенные",
-                price: 9999,
+                price: 10499,
                 icon: "fa-th-large",
-                color: "#D2B48C",
-                features: ["Массив ясеня", "Ручная резьба", "Настенный"]
+                color: "#C62828",
+                features: ["Резные снежинки", "Настенный", "24 кармашка"]
             },
             3: {
                 id: 3,
-                name: "Календарь-сундук 'Сокровища декабря'",
+                name: "Сундук 'Новогодние сокровища'",
                 category: "Настольные",
-                price: 12499,
+                price: 13999,
                 icon: "fa-gift",
-                color: "#BC8F8F",
-                features: ["Массив дуба", "Фурнитура из латуни", "Многоразовый"]
+                color: "#FF8F00",
+                features: ["Золотая фурнитура", "Многоразовый", "Подарочная упаковка"]
             },
             4: {
                 id: 4,
-                name: "Календарь с гравировкой имени",
-                category: "Персонализированные",
-                price: 8999,
+                name: "Календарь с именной гравировкой",
+                category: "С гравировкой",
+                price: 9499,
                 icon: "fa-user-edit",
-                color: "#CD853F",
-                features: ["Индивидуальная гравировка", "Массив ореха", "Эксклюзив"]
+                color: "#1B5E20",
+                features: ["Имя на заказ", "Поздравительная надпись", "Эксклюзив"]
             },
             5: {
                 id: 5,
-                name: "Трехэтажный домик 'Альпийское шале'",
+                name: "Трехэтажный домик 'Зимняя сказка'",
                 category: "Домики",
-                price: 15999,
+                price: 17999,
                 icon: "fa-mountain",
-                color: "#F4A460",
-                features: ["3 этажа", "Светодиодная подсветка", "Размер 40x25 см"]
+                color: "#D32F2F",
+                features: ["3 этажа", "Искусственный снег", "Музыкальный модуль"]
             },
             6: {
                 id: 6,
-                name: "Календарь-елка 'Лесная красавица'",
+                name: "Календарь-елка 'Золотая хвоя'",
                 category: "Настенные",
-                price: 6799,
+                price: 8799,
                 icon: "fa-tree",
-                color: "#DAA520",
-                features: ["Форма елки", "24 кармашка", "Настенный"]
+                color: "#FFA000",
+                features: ["Форма елки", "Позолота", "Настенный"]
             }
         };
+
+        // Snowflakes animation
+        function createSnowflakes() {
+            const snowflakesContainer = document.getElementById('snowflakes');
+            const snowflakeCount = 50;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                
+                // Random size
+                const size = Math.random() * 10 + 5;
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                
+                // Random position
+                snowflake.style.left = `${Math.random() * 100}vw`;
+                
+                // Random opacity
+                snowflake.style.opacity = Math.random() * 0.5 + 0.3;
+                
+                // Random animation
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 5;
+                snowflake.style.animationDuration = `${duration}s`;
+                snowflake.style.animationDelay = `${delay}s`;
+                
+                snowflakesContainer.appendChild(snowflake);
+            }
+        }
 
         // Cart management
         class CartManager {
@@ -978,6 +1283,9 @@
 
         // Tab functionality
         document.addEventListener('DOMContentLoaded', function() {
+            // Create snowflakes
+            createSnowflakes();
+            
             const tabBtns = document.querySelectorAll('.tab-btn');
             const tabContents = document.querySelectorAll('.tab-content');
             const productCards = document.querySelectorAll('.product-card');
@@ -989,6 +1297,9 @@
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const tabId = this.getAttribute('data-tab');
+                    
+                    // Play sound effect
+                    playSoundEffect('click');
                     
                     // Update active tab button
                     tabBtns.forEach(b => b.classList.remove('active'));
@@ -1024,7 +1335,7 @@
                     
                     // If no products in category, show message
                     if (targetTab.children.length === 0) {
-                        targetTab.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem; padding: 2rem;">Товары этой категории скоро появятся!</p>';
+                        targetTab.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 4rem; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);"><i class="fas fa-snowflake" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i><h3 style="color: var(--primary-color); margin-bottom: 1rem;">Скоро новые поступления!</h3><p>Товары этой категории появятся к праздникам!</p></div>';
                     }
                 }
             }
@@ -1037,16 +1348,22 @@
                         const productId = parseInt(this.getAttribute('data-id'));
                         
                         if (cartManager.addToCart(productId)) {
-                            showNotification(`"${products[productId].name}" добавлен в корзину!`);
+                            // Play sound effect
+                            playSoundEffect('bell');
+                            
+                            showNotification(`🎁 "${products[productId].name}" добавлен в корзину!`);
                             
                             // Animate button
                             const originalText = this.textContent;
-                            this.textContent = 'Добавлено!';
-                            this.style.backgroundColor = '#4CAF50';
+                            this.textContent = '🎉 Добавлено!';
+                            this.style.background = 'linear-gradient(135deg, #4CAF50, #2E7D32)';
+                            
+                            // Create confetti effect
+                            createConfetti(this.getBoundingClientRect().left + this.offsetWidth/2, this.getBoundingClientRect().top);
                             
                             setTimeout(() => {
                                 this.textContent = originalText;
-                                this.style.backgroundColor = '';
+                                this.style.background = '';
                             }, 1500);
                         }
                     });
@@ -1107,7 +1424,97 @@
                     });
                 }
             });
+            
+            // Add Christmas lights effect to header on hover
+            const logo = document.querySelector('.logo');
+            logo.addEventListener('mouseenter', function() {
+                this.style.textShadow = '0 0 10px var(--gold-color), 0 0 20px var(--gold-color), 0 0 30px var(--gold-color)';
+            });
+            
+            logo.addEventListener('mouseleave', function() {
+                this.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.3)';
+            });
         });
+        
+        // Confetti effect
+        function createConfetti(x, y) {
+            const confettiCount = 20;
+            const colors = ['#FFD700', '#C62828', '#2E7D32', '#FF8F00', '#FFFFFF'];
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = `${x}px`;
+                confetti.style.top = `${y}px`;
+                confetti.style.zIndex = '9999';
+                confetti.style.pointerEvents = 'none';
+                
+                // Random animation
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 2 + Math.random() * 3;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+                
+                document.body.appendChild(confetti);
+                
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+                
+                const animate = () => {
+                    posX += vx;
+                    posY += vy;
+                    opacity -= 0.02;
+                    
+                    confetti.style.left = `${posX}px`;
+                    confetti.style.top = `${posY}px`;
+                    confetti.style.opacity = opacity;
+                    
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        document.body.removeChild(confetti);
+                    }
+                };
+                
+                animate();
+            }
+        }
+        
+        // Sound effects
+        function playSoundEffect(type) {
+            // This is a simple visual effect since we can't play audio without user interaction
+            // In a real implementation, you would use the Web Audio API
+            if (type === 'bell') {
+                // Visual bell effect
+                const bell = document.createElement('div');
+                bell.innerHTML = '🔔';
+                bell.style.position = 'fixed';
+                bell.style.fontSize = '2rem';
+                bell.style.zIndex = '10000';
+                bell.style.left = '50%';
+                bell.style.top = '50%';
+                bell.style.transform = 'translate(-50%, -50%) scale(0)';
+                bell.style.transition = 'all 0.5s';
+                
+                document.body.appendChild(bell);
+                
+                setTimeout(() => {
+                    bell.style.transform = 'translate(-50%, -50%) scale(2)';
+                }, 10);
+                
+                setTimeout(() => {
+                    bell.style.transform = 'translate(-50%, -50%) scale(0)';
+                    setTimeout(() => {
+                        document.body.removeChild(bell);
+                    }, 500);
+                }, 500);
+            }
+        }
         
         // Notification function
         function showNotification(message) {
@@ -1128,11 +1535,20 @@
             const orderSuccess = urlParams.get('orderSuccess');
             
             if (orderSuccess === 'true') {
-                showNotification('Заказ успешно оформлен! Спасибо за покупку!');
+                showNotification('🎉 Заказ успешно оформлен! Спасибо за покупку! С наступающим Новым Годом!');
                 
                 // Remove the parameter from URL
                 const newUrl = window.location.pathname;
                 window.history.replaceState({}, document.title, newUrl);
+            }
+            
+            // Add holiday greeting
+            const months = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            
+            if (currentMonth === 11) { // December
+                showNotification('🎄 С наступающим Новым Годом! Успейте заказать календарь к праздникам!');
             }
         });
     </script>
