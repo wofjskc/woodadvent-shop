@@ -26,6 +26,7 @@
             --completed-color: #4CAF50;
             --pending-color: #FF9800;
             --cancelled-color: #F44336;
+            --urgent-color: #FF5252;
         }
         
         body {
@@ -95,6 +96,52 @@
             background: rgba(255, 255, 255, 0.2);
         }
         
+        /* New Orders Alert */
+        .new-orders-alert {
+            background: linear-gradient(135deg, var(--urgent-color), #FF8A80);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3);
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(255, 82, 82, 0.5); }
+            100% { box-shadow: 0 4px 15px rgba(255, 82, 82, 0.3); }
+        }
+        
+        .new-orders-alert.hidden {
+            display: none;
+        }
+        
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-btn {
+            background: white;
+            color: var(--urgent-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .alert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        
         /* Dashboard */
         .dashboard {
             padding: 2rem 0;
@@ -156,6 +203,17 @@
             border-left-color: var(--pending-color);
         }
         
+        .stat-card.urgent {
+            border-left-color: var(--urgent-color);
+            animation: urgentPulse 2s infinite;
+        }
+        
+        @keyframes urgentPulse {
+            0% { border-left-color: var(--urgent-color); }
+            50% { border-left-color: #FF8A80; }
+            100% { border-left-color: var(--urgent-color); }
+        }
+        
         .stat-icon {
             width: 60px;
             height: 60px;
@@ -183,6 +241,10 @@
             background: linear-gradient(135deg, var(--pending-color), #FFB74D);
         }
         
+        .stat-icon.urgent {
+            background: linear-gradient(135deg, var(--urgent-color), #FF8A80);
+        }
+        
         .stat-content h3 {
             font-size: 2rem;
             margin-bottom: 0.2rem;
@@ -191,6 +253,19 @@
         .stat-content p {
             color: #666;
             font-size: 0.9rem;
+        }
+        
+        .stat-content .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+        
+        .stat-change.negative {
+            color: var(--error-color);
         }
         
         /* Controls */
@@ -320,9 +395,26 @@
             background: #f9f9f9;
         }
         
+        .orders-table tr.new-order {
+            background: rgba(255, 152, 0, 0.05);
+            animation: highlightRow 3s ease;
+        }
+        
+        @keyframes highlightRow {
+            0% { background: rgba(255, 152, 0, 0.3); }
+            100% { background: rgba(255, 152, 0, 0.05); }
+        }
+        
         .order-id {
             font-weight: 600;
             color: var(--primary-color);
+        }
+        
+        .order-id.new::after {
+            content: '🆕';
+            margin-left: 5px;
+            font-size: 0.8em;
+            color: var(--urgent-color);
         }
         
         .order-date {
@@ -461,7 +553,7 @@
             background: white;
             border-radius: 10px;
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -510,7 +602,7 @@
         
         .order-details-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 2rem;
         }
         
@@ -523,6 +615,13 @@
             margin-bottom: 1rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .detail-section h4 i {
+            color: var(--accent-color);
         }
         
         .detail-row {
@@ -536,11 +635,13 @@
         .detail-label {
             color: #666;
             font-weight: 500;
+            min-width: 150px;
         }
         
         .detail-value {
             text-align: right;
-            max-width: 200px;
+            max-width: 250px;
+            word-break: break-word;
         }
         
         .items-details {
@@ -552,6 +653,7 @@
             padding: 1rem;
             border-radius: 8px;
             margin-bottom: 1rem;
+            border-left: 3px solid var(--primary-color);
         }
         
         .modal-actions {
@@ -657,6 +759,10 @@
             border-left-color: var(--warning-color);
         }
         
+        .notification.info {
+            border-left-color: var(--processing-color);
+        }
+        
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -668,6 +774,50 @@
             font-size: 4rem;
             color: #ddd;
             margin-bottom: 1rem;
+        }
+        
+        /* Status Timeline */
+        .status-timeline {
+            margin-top: 1.5rem;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .timeline-item.active {
+            background: var(--light-color);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .timeline-item.active .timeline-icon {
+            background: var(--primary-color);
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-content p {
+            margin: 0;
+            color: #666;
         }
         
         /* Responsive */
@@ -704,6 +854,17 @@
             .modal-actions button {
                 width: 100%;
             }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 0.3rem;
+            }
+            
+            .detail-label, .detail-value {
+                text-align: left;
+                min-width: auto;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -729,6 +890,17 @@
         </div>
     </header>
 
+    <!-- New Orders Alert -->
+    <div class="container">
+        <div class="new-orders-alert hidden" id="new-orders-alert">
+            <div class="alert-content">
+                <i class="fas fa-bell"></i>
+                <span id="alert-message">Новых заказов: <strong>0</strong></span>
+            </div>
+            <button class="alert-btn" id="show-new-orders">Показать новые</button>
+        </div>
+    </div>
+
     <!-- Dashboard -->
     <section class="dashboard">
         <div class="container">
@@ -746,6 +918,7 @@
                     <div class="stat-content">
                         <h3 id="total-orders">0</h3>
                         <p>Всего заказов</p>
+                        <div class="stat-change" id="total-change"></div>
                     </div>
                 </div>
                 
@@ -756,6 +929,7 @@
                     <div class="stat-content">
                         <h3 id="processing-orders">0</h3>
                         <p>В обработке</p>
+                        <div class="stat-change" id="processing-change"></div>
                     </div>
                 </div>
                 
@@ -766,16 +940,18 @@
                     <div class="stat-content">
                         <h3 id="completed-orders">0</h3>
                         <p>Завершено</p>
+                        <div class="stat-change" id="completed-change"></div>
                     </div>
                 </div>
                 
-                <div class="stat-card pending">
-                    <div class="stat-icon pending">
+                <div class="stat-card pending urgent">
+                    <div class="stat-icon urgent">
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-content">
                         <h3 id="pending-orders">0</h3>
-                        <p>Ожидают</p>
+                        <p>Ожидают обработки</p>
+                        <div class="stat-change" id="pending-change"></div>
                     </div>
                 </div>
             </div>
@@ -784,14 +960,14 @@
             <div class="controls">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="Поиск по ID, имени, телефону...">
+                    <input type="text" id="search-input" placeholder="Поиск по ID, имени, телефону, email...">
                 </div>
                 
                 <div class="filter-group">
                     <button class="filter-btn active" data-filter="all">Все</button>
+                    <button class="filter-btn" data-filter="pending">🆕 Новые</button>
                     <button class="filter-btn" data-filter="processing">В обработке</button>
                     <button class="filter-btn" data-filter="completed">Завершены</button>
-                    <button class="filter-btn" data-filter="pending">Ожидают</button>
                     <button class="filter-btn" data-filter="cancelled">Отменены</button>
                 </div>
                 
@@ -853,7 +1029,7 @@
                 <div class="order-details-grid">
                     <div>
                         <div class="detail-section">
-                            <h4>Информация о клиенте</h4>
+                            <h4><i class="fas fa-user"></i> Информация о клиенте</h4>
                             <div class="detail-row">
                                 <span class="detail-label">Имя:</span>
                                 <span class="detail-value" id="modal-customer-name"></span>
@@ -873,16 +1049,24 @@
                         </div>
                         
                         <div class="detail-section">
-                            <h4>Детали заказа</h4>
+                            <h4><i class="fas fa-info-circle"></i> Детали заказа</h4>
                             <div class="detail-row">
                                 <span class="detail-label">Дата заказа:</span>
                                 <span class="detail-value" id="modal-order-date"></span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Время заказа:</span>
+                                <span class="detail-value" id="modal-order-time"></span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Статус:</span>
                                 <span class="detail-value">
                                     <span id="modal-order-status" class="status-badge"></span>
                                 </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Промокод:</span>
+                                <span class="detail-value" id="modal-promo-code"></span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Комментарий:</span>
@@ -893,14 +1077,14 @@
                     
                     <div>
                         <div class="detail-section">
-                            <h4>Товары в заказе</h4>
+                            <h4><i class="fas fa-gift"></i> Товары в заказе</h4>
                             <div class="items-details" id="modal-items-list">
                                 <!-- Items will be loaded here -->
                             </div>
                         </div>
                         
                         <div class="detail-section">
-                            <h4>Финансовая информация</h4>
+                            <h4><i class="fas fa-money-bill-wave"></i> Финансовая информация</h4>
                             <div class="detail-row">
                                 <span class="detail-label">Товары:</span>
                                 <span class="detail-value" id="modal-subtotal"></span>
@@ -913,9 +1097,16 @@
                                 <span class="detail-label">Скидка:</span>
                                 <span class="detail-value" id="modal-discount"></span>
                             </div>
-                            <div class="detail-row">
+                            <div class="detail-row" style="border-bottom: 2px solid var(--primary-color); padding-bottom: 1rem;">
                                 <span class="detail-label">Итого:</span>
-                                <span class="detail-value" id="modal-total" style="font-weight: bold; color: var(--primary-color);"></span>
+                                <span class="detail-value" id="modal-total" style="font-weight: bold; font-size: 1.2rem; color: var(--primary-color);"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section status-timeline">
+                            <h4><i class="fas fa-history"></i> История статусов</h4>
+                            <div id="status-timeline">
+                                <!-- Status history will be loaded here -->
                             </div>
                         </div>
                     </div>
@@ -929,7 +1120,7 @@
                 <div class="action-buttons">
                     <button class="btn-secondary" id="btn-cancel">Отменить</button>
                     <button class="btn-primary" id="btn-process">
-                        <i class="fas fa-cogs"></i> В обработку
+                        <i class="fas fa-cogs"></i> Взять в работу
                     </button>
                     <button class="btn-primary" id="btn-complete">
                         <i class="fas fa-check"></i> Завершить
@@ -946,21 +1137,159 @@
     </div>
 
     <script>
-        // Mock database for demonstration
-        // In real app, this would be connected to a backend
+        // ==================== ORDER DATABASE ====================
         class OrderDatabase {
             constructor() {
                 this.orders = this.loadOrders();
                 this.currentOrderId = this.loadCurrentOrderId();
+                this.lastStats = this.getStats();
+                this.unreadOrders = new Set();
             }
             
             loadOrders() {
                 const savedOrders = localStorage.getItem('woodadvent_orders');
-                return savedOrders ? JSON.parse(savedOrders) : this.getMockOrders();
+                if (savedOrders) {
+                    return JSON.parse(savedOrders);
+                }
+                
+                // Create mock orders for demo
+                return this.createMockOrders();
+            }
+            
+            createMockOrders() {
+                // Create 3 mock orders with realistic data
+                const now = new Date();
+                const yesterday = new Date(now);
+                yesterday.setDate(yesterday.getDate() - 1);
+                const twoDaysAgo = new Date(now);
+                twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+                
+                return [
+                    {
+                        id: 'WD-2024-1001',
+                        date: twoDaysAgo.toISOString().split('T')[0],
+                        time: '14:30',
+                        timestamp: twoDaysAgo.getTime(),
+                        customer: {
+                            name: 'Иванов Александр Сергеевич',
+                            phone: '+7 (987) 654-32-10',
+                            email: 'ivanov.alex@example.com',
+                            address: 'г. Москва, ул. Тверская, д. 10, кв. 25, подъезд 3, этаж 5, код домофона 25K'
+                        },
+                        items: [
+                            { 
+                                id: 1, 
+                                name: 'Новогодний домик "Сказочный лес"', 
+                                price: 7999, 
+                                quantity: 1, 
+                                color: '#2E7D32',
+                                features: ['Светодиоды', 'Ручная работа', '24 сюрприза']
+                            },
+                            { 
+                                id: 2, 
+                                name: 'Календарь-елка "Золотая хвоя"', 
+                                price: 8799, 
+                                quantity: 1, 
+                                color: '#FFA000',
+                                features: ['Форма елки', 'Позолота', 'Настенный']
+                            }
+                        ],
+                        subtotal: 16798,
+                        delivery: 500,
+                        discount: 2519.7,
+                        discountCode: 'NEWYEAR24',
+                        total: 14778.3,
+                        comment: 'Пожалуйста, позвонить за час до доставки. Нужно доставить до 20 декабря. Вход со двора.',
+                        status: 'processing',
+                        statusHistory: [
+                            { status: 'pending', timestamp: twoDaysAgo.getTime(), note: 'Заказ создан' },
+                            { status: 'processing', timestamp: twoDaysAgo.getTime() + 3600000, note: 'Взят в работу' }
+                        ],
+                        assignedTo: 'Мастерская №1',
+                        isNew: false
+                    },
+                    {
+                        id: 'WD-2024-1002',
+                        date: yesterday.toISOString().split('T')[0],
+                        time: '10:15',
+                        timestamp: yesterday.getTime() + 37800000, // 10:15
+                        customer: {
+                            name: 'Петрова Мария Игоревна',
+                            phone: '+7 (912) 345-67-89',
+                            email: 'petrova.maria@example.com',
+                            address: 'г. Санкт-Петербург, Невский проспект, д. 45, кв. 12, домофон 45'
+                        },
+                        items: [
+                            { 
+                                id: 4, 
+                                name: 'Календарь с именной гравировкой', 
+                                price: 9499, 
+                                quantity: 2, 
+                                color: '#1B5E20',
+                                features: ['Имя на заказ', 'Поздравительная надпись', 'Эксклюзив'],
+                                personalization: 'Гравировка: "Семье Петровых с любовью. С Новым 2024 годом!"'
+                            }
+                        ],
+                        subtotal: 18998,
+                        delivery: 500,
+                        discount: 0,
+                        discountCode: '',
+                        total: 19498,
+                        comment: 'Гравировка на лицевой стороне, золотыми буквами. Нужно доставить до 18 декабря.',
+                        status: 'pending',
+                        statusHistory: [
+                            { status: 'pending', timestamp: yesterday.getTime() + 37800000, note: 'Заказ создан' }
+                        ],
+                        assignedTo: null,
+                        isNew: true
+                    },
+                    {
+                        id: 'WD-2024-1003',
+                        date: now.toISOString().split('T')[0],
+                        time: '09:45',
+                        timestamp: now.getTime() - 900000, // 15 минут назад
+                        customer: {
+                            name: 'Сидоров Дмитрий Александрович',
+                            phone: '+7 (905) 123-45-67',
+                            email: 'sidorov.dmitry@example.com',
+                            address: 'г. Екатеринбург, ул. Ленина, д. 33, кв. 12, подъезд 2, этаж 3'
+                        },
+                        items: [
+                            { 
+                                id: 3, 
+                                name: 'Сундук "Новогодние сокровища"', 
+                                price: 13999, 
+                                quantity: 1, 
+                                color: '#FF8F00',
+                                features: ['Золотая фурнитура', 'Многоразовый', 'Подарочная упаковка']
+                            },
+                            { 
+                                id: 6, 
+                                name: 'Календарь-елка "Золотая хвоя"', 
+                                price: 8799, 
+                                quantity: 1, 
+                                color: '#FFA000',
+                                features: ['Форма елки', 'Позолота', 'Настенный']
+                            }
+                        ],
+                        subtotal: 22798,
+                        delivery: 500,
+                        discount: 4560,
+                        discountCode: 'GIFT10',
+                        total: 18738,
+                        comment: 'Подарок для руководителя. Нужно красиво упаковать. Срочная доставка!',
+                        status: 'pending',
+                        statusHistory: [
+                            { status: 'pending', timestamp: now.getTime() - 900000, note: 'Заказ создан' }
+                        ],
+                        assignedTo: null,
+                        isNew: true
+                    }
+                ];
             }
             
             loadCurrentOrderId() {
-                return parseInt(localStorage.getItem('woodadvent_current_order_id') || '1000');
+                return parseInt(localStorage.getItem('woodadvent_current_order_id') || '1003');
             }
             
             saveOrders() {
@@ -968,126 +1297,77 @@
                 localStorage.setItem('woodadvent_current_order_id', this.currentOrderId.toString());
             }
             
-            getMockOrders() {
-                // Generate some mock orders for demonstration
-                return [
-                    {
-                        id: 'WD-2024-1001',
-                        date: '2024-12-01',
-                        customer: {
-                            name: 'Иванов Александр',
-                            phone: '+7 (987) 654-32-10',
-                            email: 'ivanov@example.com',
-                            address: 'Москва, ул. Тверская, д. 10, кв. 25'
-                        },
-                        items: [
-                            { id: 1, name: 'Новогодний домик "Сказочный лес"', price: 7999, quantity: 1, color: '#2E7D32' },
-                            { id: 2, name: 'Календарь-елка "Золотая хвоя"', price: 8799, quantity: 1, color: '#FFA000' }
-                        ],
-                        subtotal: 16798,
-                        delivery: 500,
-                        discount: 2519.7,
-                        discountCode: 'NEWYEAR24',
-                        total: 14778.3,
-                        comment: 'Пожалуйста, позвонить за час до доставки',
-                        status: 'processing'
-                    },
-                    {
-                        id: 'WD-2024-1002',
-                        date: '2024-12-02',
-                        customer: {
-                            name: 'Петрова Мария',
-                            phone: '+7 (912) 345-67-89',
-                            email: 'petrova@example.com',
-                            address: 'Санкт-Петербург, Невский пр., д. 45'
-                        },
-                        items: [
-                            { id: 4, name: 'Календарь с именной гравировкой', price: 9499, quantity: 2, color: '#1B5E20' }
-                        ],
-                        subtotal: 18998,
-                        delivery: 500,
-                        discount: 0,
-                        discountCode: '',
-                        total: 19498,
-                        comment: 'Гравировка: "Семье Петровых с любовью"',
-                        status: 'pending'
-                    },
-                    {
-                        id: 'WD-2024-1003',
-                        date: '2024-11-28',
-                        customer: {
-                            name: 'Сидоров Дмитрий',
-                            phone: '+7 (905) 123-45-67',
-                            email: 'sidorov@example.com',
-                            address: 'Екатеринбург, ул. Ленина, д. 33, кв. 12'
-                        },
-                        items: [
-                            { id: 3, name: 'Сундук "Новогодние сокровища"', price: 13999, quantity: 1, color: '#FF8F00' }
-                        ],
-                        subtotal: 13999,
-                        delivery: 500,
-                        discount: 1400,
-                        discountCode: 'SANTA2024',
-                        total: 13099,
-                        comment: '',
-                        status: 'completed'
-                    },
-                    {
-                        id: 'WD-2024-1004',
-                        date: '2024-11-30',
-                        customer: {
-                            name: 'Козлова Анна',
-                            phone: '+7 (999) 888-77-66',
-                            email: 'kozlova@example.com',
-                            address: 'Казань, ул. Баумана, д. 15'
-                        },
-                        items: [
-                            { id: 5, name: 'Трехэтажный домик "Зимняя сказка"', price: 17999, quantity: 1, color: '#D32F2F' },
-                            { id: 1, name: 'Новогодний домик "Сказочный лес"', price: 7999, quantity: 1, color: '#2E7D32' }
-                        ],
-                        subtotal: 25998,
-                        delivery: 500,
-                        discount: 5200,
-                        discountCode: 'GIFT10',
-                        total: 21298,
-                        comment: 'Нужно доставить до 20 декабря',
-                        status: 'cancelled'
-                    }
-                ];
-            }
-            
-            addOrder(orderData) {
+            // ==================== CART INTEGRATION ====================
+            // This method is called from the cart page when order is placed
+            addOrderFromCart(orderData) {
                 // Generate order ID
                 this.currentOrderId++;
-                const orderId = `WD-2024-${this.currentOrderId}`;
+                const orderId = `WD-${new Date().getFullYear()}-${this.currentOrderId}`;
                 
-                // Create order object
+                // Get current timestamp
+                const now = new Date();
+                const date = now.toISOString().split('T')[0];
+                const time = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                
+                // Create full order object with all customer data
                 const order = {
                     id: orderId,
-                    date: new Date().toISOString().split('T')[0],
+                    date: date,
+                    time: time,
+                    timestamp: now.getTime(),
                     customer: {
-                        name: orderData.name,
-                        phone: orderData.phone,
-                        email: orderData.email,
-                        address: orderData.address
+                        name: orderData.name || 'Не указано',
+                        phone: orderData.phone || 'Не указан',
+                        email: orderData.email || 'Не указан',
+                        address: orderData.address || 'Не указан'
                     },
-                    items: orderData.items,
-                    subtotal: orderData.total,
-                    delivery: 500,
+                    items: orderData.items || [],
+                    subtotal: orderData.subtotal || 0,
+                    delivery: orderData.delivery || 500,
                     discount: orderData.discount || 0,
                     discountCode: orderData.discountCode || '',
-                    total: orderData.total + 500 - (orderData.discount || 0),
+                    total: orderData.total || 0,
                     comment: orderData.comment || '',
-                    status: 'pending'
+                    status: 'pending',
+                    statusHistory: [
+                        { 
+                            status: 'pending', 
+                            timestamp: now.getTime(), 
+                            note: 'Заказ создан клиентом на сайте' 
+                        }
+                    ],
+                    assignedTo: null,
+                    isNew: true,
+                    source: 'website'
                 };
                 
-                // Add to orders
+                // Add to beginning of array (newest first)
                 this.orders.unshift(order);
                 this.saveOrders();
+                
+                // Mark as unread
+                this.unreadOrders.add(orderId);
+                
+                // Notify admin panel
+                this.notifyNewOrder(orderId);
                 
                 return orderId;
             }
             
+            notifyNewOrder(orderId) {
+                // Send notification to admin panel
+                if (window.adminPanel) {
+                    window.adminPanel.onNewOrder(orderId);
+                }
+                
+                // Also save in localStorage for cross-tab communication
+                localStorage.setItem('woodadvent_last_order', JSON.stringify({
+                    id: orderId,
+                    timestamp: Date.now()
+                }));
+            }
+            
+            // ==================== ORDER MANAGEMENT ====================
             getOrders(filter = 'all', search = '', dateFrom = '', dateTo = '') {
                 let filteredOrders = [...this.orders];
                 
@@ -1103,7 +1383,8 @@
                         order.id.toLowerCase().includes(searchLower) ||
                         order.customer.name.toLowerCase().includes(searchLower) ||
                         order.customer.phone.includes(search) ||
-                        order.customer.email.toLowerCase().includes(searchLower)
+                        order.customer.email.toLowerCase().includes(searchLower) ||
+                        order.customer.address.toLowerCase().includes(searchLower)
                     );
                 }
                 
@@ -1122,20 +1403,53 @@
                 return this.orders.find(order => order.id === orderId);
             }
             
-            updateOrderStatus(orderId, newStatus) {
+            updateOrderStatus(orderId, newStatus, note = '') {
                 const order = this.getOrderById(orderId);
-                if (order) {
-                    order.status = newStatus;
-                    this.saveOrders();
-                    return true;
+                if (!order) return false;
+                
+                const oldStatus = order.status;
+                order.status = newStatus;
+                
+                // Add to status history
+                order.statusHistory.push({
+                    status: newStatus,
+                    timestamp: Date.now(),
+                    note: note || `Статус изменен с "${this.getStatusText(oldStatus)}" на "${this.getStatusText(newStatus)}"`
+                });
+                
+                // If order is being processed, assign to current admin
+                if (newStatus === 'processing') {
+                    order.assignedTo = 'Текущий администратор';
                 }
-                return false;
+                
+                // Mark as read when status changes
+                this.markAsRead(orderId);
+                
+                this.saveOrders();
+                return true;
+            }
+            
+            markAsRead(orderId) {
+                this.unreadOrders.delete(orderId);
+            }
+            
+            markAllAsRead() {
+                this.unreadOrders.clear();
+            }
+            
+            getUnreadCount() {
+                return this.unreadOrders.size;
+            }
+            
+            getNewOrders() {
+                return this.orders.filter(order => order.isNew);
             }
             
             deleteOrder(orderId) {
                 const index = this.orders.findIndex(order => order.id === orderId);
                 if (index !== -1) {
                     this.orders.splice(index, 1);
+                    this.unreadOrders.delete(orderId);
                     this.saveOrders();
                     return true;
                 }
@@ -1148,8 +1462,23 @@
                 const completed = this.orders.filter(o => o.status === 'completed').length;
                 const pending = this.orders.filter(o => o.status === 'pending').length;
                 const cancelled = this.orders.filter(o => o.status === 'cancelled').length;
+                const newOrders = this.orders.filter(o => o.isNew).length;
+                const today = new Date().toISOString().split('T')[0];
+                const todayOrders = this.orders.filter(o => o.date === today).length;
                 
-                return { total, processing, completed, pending, cancelled };
+                return { total, processing, completed, pending, cancelled, newOrders, todayOrders };
+            }
+            
+            getStatsChange() {
+                const currentStats = this.getStats();
+                const changes = {};
+                
+                for (const key in currentStats) {
+                    changes[key] = currentStats[key] - (this.lastStats[key] || 0);
+                }
+                
+                this.lastStats = currentStats;
+                return changes;
             }
             
             formatPrice(price) {
@@ -1160,9 +1489,33 @@
                 const date = new Date(dateString);
                 return date.toLocaleDateString('ru-RU');
             }
+            
+            formatDateTime(dateString, timeString) {
+                return `${this.formatDate(dateString)} ${timeString}`;
+            }
+            
+            getStatusText(status) {
+                const statusMap = {
+                    'pending': '🆕 Ожидает',
+                    'processing': 'В обработке',
+                    'completed': '✅ Завершен',
+                    'cancelled': '❌ Отменен'
+                };
+                return statusMap[status] || status;
+            }
+            
+            getStatusIcon(status) {
+                const iconMap = {
+                    'pending': 'fas fa-clock',
+                    'processing': 'fas fa-cogs',
+                    'completed': 'fas fa-check-circle',
+                    'cancelled': 'fas fa-times-circle'
+                };
+                return iconMap[status] || 'fas fa-question-circle';
+            }
         }
 
-        // Admin Panel Class
+        // ==================== ADMIN PANEL ====================
         class AdminPanel {
             constructor() {
                 this.db = new OrderDatabase();
@@ -1170,6 +1523,7 @@
                 this.currentPage = 1;
                 this.ordersPerPage = 10;
                 this.currentOrder = null;
+                this.newOrdersCount = 0;
                 
                 this.init();
             }
@@ -1181,16 +1535,11 @@
                 // Setup event listeners
                 this.setupEventListeners();
                 
-                // Listen for new orders from main site
-                this.setupStorageListener();
+                // Setup real-time updates
+                this.setupRealTimeUpdates();
                 
-                // Listen for messages from main site
-                window.addEventListener('message', (event) => {
-                    if (event.data.type === 'newOrder') {
-                        this.showNotification(`Новый заказ: ${event.data.orderId}`, 'success');
-                        this.loadOrders();
-                    }
-                });
+                // Check for new orders from cart
+                this.checkForNewOrders();
             }
             
             setupEventListeners() {
@@ -1234,11 +1583,11 @@
                 });
                 
                 document.getElementById('btn-process').addEventListener('click', () => {
-                    this.updateOrderStatus('processing');
+                    this.updateOrderStatus('processing', 'Взят в работу администратором');
                 });
                 
                 document.getElementById('btn-complete').addEventListener('click', () => {
-                    this.updateOrderStatus('completed');
+                    this.updateOrderStatus('completed', 'Заказ успешно выполнен');
                 });
                 
                 document.getElementById('btn-cancel').addEventListener('click', () => {
@@ -1251,20 +1600,63 @@
                         this.closeModal();
                     }
                 });
+                
+                // New orders alert
+                document.getElementById('show-new-orders').addEventListener('click', () => {
+                    this.setFilter('pending');
+                    this.db.markAllAsRead();
+                    this.updateAlert();
+                });
             }
             
-            setupStorageListener() {
-                // Listen for new orders in localStorage
-                let lastOrderCount = this.db.orders.length;
-                
+            setupRealTimeUpdates() {
+                // Check for new orders every 2 seconds
                 setInterval(() => {
-                    const currentCount = this.db.orders.length;
-                    if (currentCount > lastOrderCount) {
-                        this.showNotification('Поступил новый заказ!', 'success');
-                        this.loadOrders();
+                    this.checkForNewOrders();
+                }, 2000);
+                
+                // Listen for storage events (cross-tab communication)
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'woodadvent_last_order') {
+                        this.checkForNewOrders();
                     }
-                    lastOrderCount = currentCount;
-                }, 1000);
+                });
+            }
+            
+            checkForNewOrders() {
+                const newCount = this.db.getUnreadCount();
+                if (newCount !== this.newOrdersCount) {
+                    this.newOrdersCount = newCount;
+                    this.updateAlert();
+                    if (newCount > 0) {
+                        this.loadOrders(); // Refresh orders list
+                    }
+                }
+            }
+            
+            updateAlert() {
+                const alert = document.getElementById('new-orders-alert');
+                const message = document.getElementById('alert-message');
+                
+                if (this.newOrdersCount > 0) {
+                    alert.classList.remove('hidden');
+                    message.innerHTML = `Новых заказов: <strong>${this.newOrdersCount}</strong>`;
+                } else {
+                    alert.classList.add('hidden');
+                }
+            }
+            
+            onNewOrder(orderId) {
+                // Show notification
+                this.showNotification(`Поступил новый заказ: ${orderId}`, 'info');
+                
+                // Update stats
+                this.updateStats();
+                
+                // Refresh orders if on "all" or "pending" filter
+                if (this.currentFilter === 'all' || this.currentFilter === 'pending') {
+                    this.loadOrders();
+                }
             }
             
             loadOrders() {
@@ -1276,11 +1668,30 @@
             
             updateStats() {
                 const stats = this.db.getStats();
+                const changes = this.db.getStatsChange();
                 
+                // Update numbers
                 document.getElementById('total-orders').textContent = stats.total;
                 document.getElementById('processing-orders').textContent = stats.processing;
                 document.getElementById('completed-orders').textContent = stats.completed;
                 document.getElementById('pending-orders').textContent = stats.pending;
+                
+                // Update changes
+                this.updateStatChange('total-change', changes.total);
+                this.updateStatChange('processing-change', changes.processing);
+                this.updateStatChange('completed-change', changes.completed);
+                this.updateStatChange('pending-change', changes.pending);
+            }
+            
+            updateStatChange(elementId, change) {
+                const element = document.getElementById(elementId);
+                if (change > 0) {
+                    element.innerHTML = `<span class="stat-change positive">+${change} с последнего обновления</span>`;
+                } else if (change < 0) {
+                    element.innerHTML = `<span class="stat-change negative">${change} с последнего обновления</span>`;
+                } else {
+                    element.innerHTML = '';
+                }
             }
             
             renderOrdersTable(orders) {
@@ -1308,15 +1719,21 @@
                     
                     // Get status badge class
                     const statusClass = `status-${order.status}`;
-                    const statusText = this.getStatusText(order.status);
+                    const statusText = this.db.getStatusText(order.status);
+                    
+                    // Check if order is new (unread)
+                    const isNew = this.db.unreadOrders.has(order.id);
+                    const newClass = isNew ? ' new-order' : '';
+                    const newBadge = isNew ? ' new' : '';
                     
                     html += `
-                        <tr data-order-id="${order.id}">
+                        <tr data-order-id="${order.id}" class="${newClass}">
                             <td>
-                                <div class="order-id">${order.id}</div>
+                                <div class="order-id${newBadge}">${order.id}</div>
+                                ${order.source === 'website' ? '<span style="font-size: 0.7rem; color: #666;">онлайн</span>' : ''}
                             </td>
                             <td>
-                                <div class="order-date">${this.db.formatDate(order.date)}</div>
+                                <div class="order-date">${this.db.formatDateTime(order.date, order.time)}</div>
                             </td>
                             <td>
                                 <div class="customer-info">
@@ -1367,10 +1784,17 @@
                 tbody.innerHTML = html;
                 
                 // Update orders count
-                document.getElementById('orders-count').textContent = `${orders.length} заказ${orders.length % 10 === 1 ? '' : (orders.length % 10 >= 2 && orders.length % 10 <= 4 ? 'а' : 'ов')}`;
+                const orderWord = this.getOrderWord(orders.length);
+                document.getElementById('orders-count').textContent = `${orders.length} ${orderWord}`;
                 
                 // Attach event listeners to new buttons
                 this.attachTableEventListeners();
+            }
+            
+            getOrderWord(count) {
+                if (count % 10 === 1 && count % 100 !== 11) return 'заказ';
+                if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) return 'заказа';
+                return 'заказов';
             }
             
             attachTableEventListeners() {
@@ -1379,6 +1803,8 @@
                     btn.addEventListener('click', (e) => {
                         const orderId = e.target.closest('button').dataset.orderId;
                         this.showOrderDetails(orderId);
+                        this.db.markAsRead(orderId);
+                        this.updateAlert();
                     });
                 });
                 
@@ -1386,7 +1812,7 @@
                 document.querySelectorAll('.process-order').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const orderId = e.target.closest('button').dataset.orderId;
-                        this.updateOrderStatus('processing', orderId);
+                        this.updateOrderStatus('processing', 'Взят в работу', orderId);
                     });
                 });
             }
@@ -1505,16 +1931,18 @@
                 document.getElementById('modal-customer-email').textContent = order.customer.email;
                 document.getElementById('modal-customer-address').textContent = order.customer.address;
                 document.getElementById('modal-order-date').textContent = this.db.formatDate(order.date);
+                document.getElementById('modal-order-time').textContent = order.time;
                 document.getElementById('modal-order-comment').textContent = order.comment || '—';
+                document.getElementById('modal-promo-code').textContent = order.discountCode || '—';
                 document.getElementById('modal-subtotal').textContent = this.db.formatPrice(order.subtotal);
                 document.getElementById('modal-delivery').textContent = this.db.formatPrice(order.delivery);
                 document.getElementById('modal-discount').textContent = order.discount > 0 ? 
-                    `-${this.db.formatPrice(order.discount)} (${order.discountCode})` : '—';
+                    `-${this.db.formatPrice(order.discount)} ${order.discountCode ? `(${order.discountCode})` : ''}` : '—';
                 document.getElementById('modal-total').textContent = this.db.formatPrice(order.total);
                 
                 // Status badge
                 const statusBadge = document.getElementById('modal-order-status');
-                statusBadge.textContent = this.getStatusText(order.status);
+                statusBadge.textContent = this.db.getStatusText(order.status);
                 statusBadge.className = `status-badge status-${order.status}`;
                 
                 // Items list
@@ -1522,15 +1950,43 @@
                 itemsList.innerHTML = order.items.map(item => `
                     <div class="item-detail">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                            <strong>${item.name}</strong>
+                            <div>
+                                <strong>${item.name}</strong>
+                                ${item.personalization ? `<div style="color: #666; font-size: 0.9rem; margin-top: 0.3rem;"><i>${item.personalization}</i></div>` : ''}
+                            </div>
                             <span>${this.db.formatPrice(item.price)} × ${item.quantity}</span>
                         </div>
                         <div style="display: flex; justify-content: space-between;">
-                            <span style="color: #666;">Артикул: ${item.id}</span>
+                            <div>
+                                <span style="color: #666; font-size: 0.8rem;">Артикул: ${item.id}</span>
+                                ${item.features ? `<div style="margin-top: 0.3rem;">${item.features.map(f => `<span style="background: #e0e0e0; padding: 0.2rem 0.5rem; border-radius: 3px; font-size: 0.8rem; margin-right: 0.3rem;">${f}</span>`).join('')}</div>` : ''}
+                            </div>
                             <strong>${this.db.formatPrice(item.price * item.quantity)}</strong>
                         </div>
                     </div>
                 `).join('');
+                
+                // Status timeline
+                const timeline = document.getElementById('status-timeline');
+                timeline.innerHTML = order.statusHistory.map(entry => {
+                    const date = new Date(entry.timestamp);
+                    const timeString = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    const dateString = date.toLocaleDateString('ru-RU');
+                    const isActive = entry.status === order.status;
+                    
+                    return `
+                        <div class="timeline-item ${isActive ? 'active' : ''}">
+                            <div class="timeline-icon">
+                                <i class="${this.db.getStatusIcon(entry.status)}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <strong>${this.db.getStatusText(entry.status)}</strong>
+                                <p>${dateString} ${timeString}</p>
+                                ${entry.note ? `<p style="font-size: 0.9rem; color: #666;">${entry.note}</p>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
                 
                 // Show/hide action buttons based on status
                 this.updateActionButtons(order.status);
@@ -1578,12 +2034,12 @@
                 this.currentOrder = null;
             }
             
-            updateOrderStatus(newStatus, orderId = null) {
+            updateOrderStatus(newStatus, note = '', orderId = null) {
                 const targetOrderId = orderId || this.currentOrder?.id;
                 if (!targetOrderId) return;
                 
-                if (this.db.updateOrderStatus(targetOrderId, newStatus)) {
-                    this.showNotification(`Статус заказа ${targetOrderId} изменен на "${this.getStatusText(newStatus)}"`, 'success');
+                if (this.db.updateOrderStatus(targetOrderId, newStatus, note)) {
+                    this.showNotification(`Статус заказа ${targetOrderId} изменен на "${this.db.getStatusText(newStatus)}"`, 'success');
                     this.loadOrders();
                     
                     if (this.currentOrder) {
@@ -1597,7 +2053,7 @@
                 
                 if (this.currentOrder.status === 'completed' || this.currentOrder.status === 'cancelled') {
                     // Delete order
-                    if (confirm('Удалить этот заказ?')) {
+                    if (confirm('Удалить этот заказ из базы данных?')) {
                         this.db.deleteOrder(this.currentOrder.id);
                         this.showNotification(`Заказ ${this.currentOrder.id} удален`, 'success');
                         this.closeModal();
@@ -1605,24 +2061,71 @@
                     }
                 } else {
                     // Cancel order
-                    if (confirm('Отменить этот заказ?')) {
-                        this.updateOrderStatus('cancelled');
+                    if (confirm('Отменить этот заказ? Клиент будет уведомлен.')) {
+                        this.updateOrderStatus('cancelled', 'Заказ отменен администратором');
                     }
                 }
             }
             
             printOrder() {
-                window.print();
-            }
-            
-            getStatusText(status) {
-                const statusMap = {
-                    'pending': 'Ожидает',
-                    'processing': 'В обработке',
-                    'completed': 'Завершен',
-                    'cancelled': 'Отменен'
-                };
-                return statusMap[status] || status;
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Заказ ${this.currentOrder.id}</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            h1 { color: #1A237E; }
+                            .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; }
+                            .row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+                            .label { font-weight: bold; color: #666; }
+                            .item { margin-bottom: 10px; padding: 10px; background: #f5f5f5; }
+                            @media print {
+                                .no-print { display: none; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Заказ ${this.currentOrder.id}</h1>
+                        <div class="section">
+                            <h2>Информация о клиенте</h2>
+                            <div class="row"><span class="label">Имя:</span> ${this.currentOrder.customer.name}</div>
+                            <div class="row"><span class="label">Телефон:</span> ${this.currentOrder.customer.phone}</div>
+                            <div class="row"><span class="label">Email:</span> ${this.currentOrder.customer.email}</div>
+                            <div class="row"><span class="label">Адрес:</span> ${this.currentOrder.customer.address}</div>
+                        </div>
+                        <div class="section">
+                            <h2>Товары в заказе</h2>
+                            ${this.currentOrder.items.map(item => `
+                                <div class="item">
+                                    <div class="row"><strong>${item.name}</strong> ×${item.quantity}</div>
+                                    <div class="row"><span class="label">Цена:</span> ${this.db.formatPrice(item.price)}</div>
+                                    <div class="row"><span class="label">Сумма:</span> ${this.db.formatPrice(item.price * item.quantity)}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="section">
+                            <h2>Финансовая информация</h2>
+                            <div class="row"><span class="label">Товары:</span> ${this.db.formatPrice(this.currentOrder.subtotal)}</div>
+                            <div class="row"><span class="label">Доставка:</span> ${this.db.formatPrice(this.currentOrder.delivery)}</div>
+                            <div class="row"><span class="label">Скидка:</span> -${this.db.formatPrice(this.currentOrder.discount)} ${this.currentOrder.discountCode ? `(${this.currentOrder.discountCode})` : ''}</div>
+                            <div class="row" style="border-top: 2px solid #000; padding-top: 10px; margin-top: 10px;">
+                                <span class="label" style="font-size: 1.2em;">Итого:</span> 
+                                <strong style="font-size: 1.2em;">${this.db.formatPrice(this.currentOrder.total)}</strong>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <h2>Комментарий к заказу</h2>
+                            <p>${this.currentOrder.comment || '—'}</p>
+                        </div>
+                        <div class="section no-print">
+                            <button onclick="window.print()">Печать</button>
+                            <button onclick="window.close()">Закрыть</button>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
             }
             
             showNotification(message, type = 'success') {
@@ -1641,6 +2144,9 @@
                     case 'warning':
                         notificationIcon.className = 'fas fa-exclamation-triangle';
                         break;
+                    case 'info':
+                        notificationIcon.className = 'fas fa-info-circle';
+                        break;
                 }
                 
                 notificationText.textContent = message;
@@ -1653,45 +2159,107 @@
             }
         }
 
+        // ==================== INTEGRATION WITH CART ====================
+        // This function will be called from the cart page
+        function receiveOrderFromCart(orderData) {
+            const db = new OrderDatabase();
+            const orderId = db.addOrderFromCart(orderData);
+            
+            console.log(`Order ${orderId} received from cart:`, orderData);
+            
+            // Notify admin panel if it's open
+            if (window.adminPanel) {
+                window.adminPanel.onNewOrder(orderId);
+            }
+            
+            return orderId;
+        }
+
+        // Simulate receiving an order (for demo purposes)
+        function simulateOrderFromCart() {
+            const mockOrderData = {
+                name: 'Тестовый Клиент',
+                phone: '+7 (999) 888-77-66',
+                email: 'test@example.com',
+                address: 'г. Москва, ул. Тестовая, д. 1, кв. 1',
+                items: [
+                    {
+                        id: 1,
+                        name: 'Новогодний домик "Сказочный лес"',
+                        price: 7999,
+                        quantity: 2,
+                        color: '#2E7D32',
+                        features: ['Светодиоды', 'Ручная работа', '24 сюрприза']
+                    }
+                ],
+                subtotal: 15998,
+                delivery: 500,
+                discount: 2400,
+                discountCode: 'SANTA2024',
+                total: 14098,
+                comment: 'Тестовый заказ с сайта. Позвонить для подтверждения.'
+            };
+            
+            receiveOrderFromCart(mockOrderData);
+        }
+
         // Initialize admin panel when page loads
         document.addEventListener('DOMContentLoaded', () => {
             const adminPanel = new AdminPanel();
             
-            // Expose to window for debugging
+            // Expose to window for debugging and integration
             window.adminPanel = adminPanel;
+            window.receiveOrderFromCart = receiveOrderFromCart;
+            
+            // Auto-refresh every 30 seconds
+            setInterval(() => {
+                adminPanel.loadOrders();
+            }, 30000);
+            
+            // Demo: Simulate receiving orders periodically
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% chance
+                    simulateOrderFromCart();
+                }
+            }, 15000);
         });
 
-        // This function should be called from the cart page when order is placed
-        // For demonstration, we'll simulate receiving an order
-        function simulateNewOrder() {
-            const db = new OrderDatabase();
-            const mockOrderData = {
-                name: 'Новый клиент',
-                phone: '+7 (999) 123-45-67',
-                email: 'new@example.com',
-                address: 'Новый адрес доставки',
-                items: [
-                    { id: 2, name: 'Календарь "Праздничные узоры"', price: 10499, quantity: 1, color: '#C62828' }
-                ],
-                total: 10499,
-                comment: 'Тестовый заказ'
+        // ==================== CART SITE INTEGRATION ====================
+        // Add this to your cart.html page to send orders to admin panel:
+        /*
+        // In cart.html, after order is placed successfully:
+        
+        function sendOrderToAdmin(orderData) {
+            // Prepare order data from cart
+            const orderToSend = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                items: cartManager.cart,
+                subtotal: cartManager.getSubtotal(),
+                delivery: cartManager.deliveryCost,
+                discount: cartManager.discountAmount,
+                discountCode: cartManager.discountCode,
+                total: cartManager.getTotal(),
+                comment: document.getElementById('comment').value
             };
             
-            const orderId = db.addOrder(mockOrderData);
+            // Save to localStorage (for admin panel on same domain)
+            localStorage.setItem('woodadvent_last_cart_order', JSON.stringify(orderToSend));
             
-            // Show notification in admin panel
-            if (window.adminPanel) {
-                window.adminPanel.showNotification(`Новый заказ: ${orderId}`, 'success');
-                window.adminPanel.loadOrders();
+            // If admin panel is in another tab/window
+            if (window.opener && window.opener.receiveOrderFromCart) {
+                window.opener.receiveOrderFromCart(orderToSend);
             }
+            
+            // Also save to admin database directly
+            localStorage.setItem('woodadvent_new_order', JSON.stringify(orderToSend));
+            
+            // Broadcast to other tabs
+            window.localStorage.setItem('woodadvent_order_update', Date.now().toString());
         }
-
-        // Simulate receiving new orders periodically (for demo)
-        setInterval(() => {
-            if (Math.random() > 0.8) { // 20% chance every 10 seconds
-                simulateNewOrder();
-            }
-        }, 10000);
+        */
     </script>
 </body>
 </html>
